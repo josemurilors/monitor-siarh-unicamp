@@ -101,7 +101,7 @@ function compareState(oldData, newData) {
 
 function buildEmailBody(results, changes) {
   let body = `=== MONITOR DE CONCURSOS UNICAMP ===\n\n`;
-  body += `Data/Hora: ${new Date().toLocaleString('pt-BR')}\n\n`;
+  body += `Data/Hora: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}\n\n`;
 
   for (const r of results) {
     const change = changes.find(c => c.numero === r.numero);
@@ -125,7 +125,7 @@ function buildEmailBody(results, changes) {
     body += '\n';
   }
 
-  body += `---\nMonitor automático - UNICAMP\nExecução: ${new Date().toISOString()}`;
+  body += `---\nMonitor automático - UNICAMP\nExecução: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`;
   return body;
 }
 
@@ -202,7 +202,7 @@ async function scrapeConcursos() {
 }
 
 async function sendTestEmail() {
-  const body = `=== EMAIL DE TESTE ===\n\nSe você recebeu este email, o sistema de notificação do Monitor de Concursos UNICAMP está funcionando corretamente.\n\nData/Hora: ${new Date().toLocaleString('pt-BR')}\n\n---\nMonitor automático - UNICAMP`;
+  const body = `=== EMAIL DE TESTE ===\n\nSe você recebeu este email, o sistema de notificação do Monitor de Concursos UNICAMP está funcionando corretamente.\n\nData/Hora: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}\n\n---\nMonitor automático - UNICAMP`;
   await sendEmail(body, true);
   console.log('Email de teste enviado com sucesso!');
 }

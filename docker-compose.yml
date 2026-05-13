@@ -5,6 +5,7 @@ services:
     env_file:
       - .env
     environment:
+      - TZ=America/Sao_Paulo
       - CHECK_INTERVAL=240
     volumes:
       - ./dados-concursos.json:/app/dados-concursos.json
