@@ -207,14 +207,7 @@ async function sendTestEmail() {
   console.log('Email de teste enviado com sucesso!');
 }
 
-async function main() {
-  const args = process.argv.slice(2);
-
-  if (args.includes('--test')) {
-    await sendTestEmail();
-    return;
-  }
-
+async function run() {
   console.log('=== MONITOR DE CONCURSOS UNICAMP ===\n');
 
   const results = await scrapeConcursos();
@@ -241,6 +234,35 @@ async function main() {
   } else {
     console.log('\nNenhuma alteração desde a última verificação. Email não enviado.');
   }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  if (args.includes('--test')) {
+    await sendTestEmail();
+    return;
+  }
+
+  if (args.includes('--daemon')) {
+    const interval = parseInt(process.env.CHECK_INTERVAL || '240', 10) * 60 * 1000;
+    console.log(`Modo daemon: executando a cada ${interval / 60000} minutos\n`);
+    while (true) {
+      try {
+        await run();
+      } catch (err) {
+        console.error('Erro na execução:', err.message);
+      }
+      console.log(`\nAguardando ${interval / 60000} minutos até a próxima verificação...\n`);
+      await sleep(interval);
+    }
+  }
+
+  await run();
 }
 
 main().catch(err => {

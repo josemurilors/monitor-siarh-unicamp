@@ -1,0 +1,12 @@
+services:
+  monitor:
+    build: .
+    container_name: monitor-unicamp
+    env_file:
+      - .env
+    environment:
+      - CHECK_INTERVAL=240
+    volumes:
+      - ./dados-concursos.json:/app/dados-concursos.json
+    command: ["node", "monitor-concursos.js", "--daemon"]
+    restart: unless-stopped

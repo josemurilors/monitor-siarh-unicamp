@@ -7,7 +7,7 @@ Script automatizado que monitora concursos públicos finalizados da **UNICAMP** 
 - Extrai dados da página 2 (e seguintes) do portal de concursos encerrados
 - Detecta alterações no número de **convocados até a classificação** (lista geral, negros e deficiência)
 - Envia email de alerta via **Gmail SMTP** apenas quando detecta mudança
-- Agendamento a cada **4 horas** via Windows Task Scheduler
+- Agendamento a cada **4 horas** via Windows Task Scheduler ou Docker
 
 ## Como usar
 
@@ -140,9 +140,61 @@ monitor-unicamp/
 6. Se mudou → salva novo snapshot + envia email com detalhes da alteração
 7. Se igual → apenas registra log, não envia email
 
+## Docker
+
+### Pré-requisitos
+
+- Docker instalado (Docker Desktop no Windows, ou docker-ce no Linux)
+
+### Build da imagem
+
+```bash
+docker compose build
+```
+
+### Execução única
+
+```bash
+docker compose run --rm monitor
+```
+
+### Execução contínua (daemon)
+
+O container executa o monitoramento a cada 4 horas automaticamente:
+
+```bash
+docker compose up -d
+```
+
+Para parar:
+
+```bash
+docker compose down
+```
+
+### Logs
+
+```bash
+docker compose logs -f monitor
+```
+
+### Verificar status dos últimos monitoramentos
+
+```bash
+docker compose logs --tail=20 monitor
+```
+
+### Agendamento com cron do host (alternativa ao daemon)
+
+```bash
+# Executar a cada 4 horas
+0 */4 * * * cd /caminho/do/projeto && docker compose run --rm monitor >> logs.txt 2>&1
+```
+
 ## Tecnologias
 
 - **Node.js** v22+
 - **Playwright** (Chromium headless)
 - **Nodemailer** (Gmail SMTP)
 - **dotenv** (variáveis de ambiente)
+- **Docker** (Playwright official image)
